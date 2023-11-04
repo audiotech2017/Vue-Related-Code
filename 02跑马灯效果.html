@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <script src="./lib/vue.min.js"></script> 
+
+
+
+    <div id="app">
+        <input type="button" name="name" value="浪起来" @click="moving"/>
+        <input type="button" name="name" value="低调吧" @click="stopping"/>
+        <h1>{{message1}}</h1>
+        
+    </div>
+
+
+    <script type="text/javascript">
+
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                message1: '猥琐发育 别浪~~~',
+                intervalid: null 
+            },
+            methods: {
+                moving: function () {
+                    if (this.intervalid != null) return;
+
+                    this.intervalid = setInterval(() => {
+                        var start = this.message1.substring(0, 1)
+                        var end = this.message1.substring(1)
+                        this.message1 = end + start
+                    }, 300);
+                },
+                stopping: function () {
+                    clearInterval(this.intervalid);
+                    this.intervalid = null;
+                }
+            }
+
+        })
+
+    </script>
+
+
+</body>
+</html>

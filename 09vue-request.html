@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+
+<body>
+    <script src="./lib/vue.min.js"></script>
+    <script src="./lib/vue-resource.min.js"></script>
+    <link href="./lib/bootstrap.min.css" rel="stylesheet" />
+    <link href="./lib/dist/bootstrap-table.css" rel="stylesheet" />
+
+    <script src="./lib/jquery.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
+    <script src="./lib/bootstrap-table.js"></script>
+    <script src="./lib/dist/locale/bootstrap-table-zh-CN.js"></script>
+
+
+    <div id="app">
+        <!--下面是菜鸟网站的form样本-->
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label class="sr-only" for="name">名称</label>
+                <input type="text" class="form-control" id="name" placeholder="请输入名称">
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="inputfile">文件输入</label>
+                <input type="file" id="inputfile">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> 请打勾
+                </label>
+            </div>
+            <button type="submit" class="btn btn-default">提交</button>
+        </form>
+        <!--下面是网站学习资料的例子-->
+        <div class="pannel-primary">
+            <div class="pannel-heading">
+                <h3 class="pannel-title">pannel title</h3>
+            </div>
+            <div class="pannel-body form-inline">
+                <label>
+                    id:
+                    <input type="text" name="name" value="" class="form-control" v-model="id" />
+                </label>
+                <label>
+                    brand:
+                    <input type="text" name="name" value="" class="form-control" v-model="brand" />
+                </label>
+                <label>
+                    subbrand:
+                    <input type="text" name="name" value="" class="form-control" v-model="subbrand" @keyup.f2="add" />
+                </label>
+                <input type="button" name="add" value="add" calss="form-control" @click="add" />
+                <label>
+                    search:
+                    <input type="text" name="name" value="" class="form-control" v-model="keywords" id="search" v-focus
+                        v-color="'green'" />
+                </label>
+            </div>
+        </div>
+        <!--<p v-for="(item,i) in  brandlist" v-bind:key="item.id">{{item.subbrand}}</p>-->
+
+        <table data-toggle="table">
+            <tr>
+                <td>id</td>
+                <td>brand</td>
+                <td>subbrand</td>
+                <td>timestampx</td>
+                <td>operation</td>
+            </tr>
+            <tr v-for="(item,i) in search(keywords)" v-bind:key="item.id">
+                <td>{{item.id}}</td>
+                <td>{{item.brand}}</td>
+                <td>{{item.subbrand}}</td>
+                <td>{{item.timestampx | dateformater(' ')}}</td>
+                <td><a href="#" v-on:click.prevent="del1(item.id)">delete</a></td>
+            </tr>
+        </table>
+
+
+        <!--下面为vue的请求测试-->
+        <input type="button" name="name" value="getInfo" @click="getInfo" />
+        <input type="button" name="name" value="postInfo" @click="postInfo" />
+        <input type="button" name="name" value="jsonInfo" @click="jsonpInfo" />
+
+    </div>
+
+    <div id="app2">
+        <p v-color="'red'" v-fontweight="900" v-fontsize="100" id="h3msgWelcome"> {{dt}}this is div2 {{msgWelcome}} -->
+            {{dt|dateformater(' ')}} </p>
+        <input type="button" name="name" value="changeMessage" @click="changeMessage" />
+    </div>
+
+    <script>
+        /*过滤器的定义语法  过滤器的Function第一个参数永远是过滤器管道符前面传递过来的数据*/
+        /*也可以通过正则表达式进行表达 第二个message是全局匹配通过正则表达式做的 且可以连续过滤*/
+        Vue.filter('msgformat1', function (msg) {
+            return msg.replace('美好', '邪恶')
+        })
+        Vue.filter('msgformat2', function (msg) {
+            return msg.replace(/美好/g, '邪恶')
+        })
+        Vue.filter('msgformat3', function (msg, arg) {
+            return msg.replace(/美好/g, arg)
+        })
+        Vue.filter('msgformat4', function (msg, arg) {
+            return msg + arg
+        })
+        Vue.filter('dateformater', function (datestr, pattern = '') {
+            var dt = new Date(datestr)
+            var y = dt.getFullYear()
+            var m = (dt.getMonth() + 1).toString().padStart(2, '0')
+            var d = dt.getDate().toString().padStart(2, '0')
+            //return y + '-' + m + '-' + d
+            if (pattern.toLowerCase() == 'yyyy-mm-dd') {
+                return `${y}-${m}-${d}`
+            }
+            else {
+                var hh = dt.getHours().toString().padStart(2, '0')
+                var mm = dt.getMinutes().toString().padStart(2, '0')
+                var ss = dt.getSeconds().toString().padStart(2, '0')
+                return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+            }
+        })
+
+        /*自定义按键修饰符*/
+        Vue.config.keyCodes.f2 = 113
+        /*自定义指令 */
+        Vue.directive('focus', {
+            bind: function (el) { //指令绑定到元素上的时候会立即执行函数 1次
+                //el就是被绑定指令的那个元素 原生的js对象 也就是dom对象 一个元素只有插入dom重才会有焦点
+
+            },
+            inserted: function (el) { //元素插入到DOM中的时候执行insert函数
+                el.focus()
+            },
+            updated: function (el) { //元素更新后会执行的
+
+            }
+        })
+
+        Vue.directive('color', {
+            bind: function (el, binding) {       //指令绑定到元素上的时候会立即执行函数 1次
+                //el.style.color = 'red'  //el就是被绑定指令的那个元素 原生的js对象 也就是dom对象 一个元素只有插入dom重才会有焦点
+                console.log(binding.value) //通过binding这个来获取绑定的值 方便在dom赋值
+                el.style.color = binding.value
+            },
+            inserted: function (el) {   //元素插入到DOM中的时候执行insert函数
+
+            },
+            updated: function (el) {    //元素更新后会执行的
+
+            }
+        })
+        Vue.config.devtools = true
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                brandlist: [
+                    { id: 1, brand: 'BMW ', subbrand: '740li', timestampx: new Date() },
+                    { id: 2, brand: 'Benz', subbrand: 'S600', timestampx: new Date() },
+                    { id: 3, brand: 'BMW ', subbrand: 'xx2', timestampx: new Date() },
+                    { id: 4, brand: 'Benz ', subbrand: 'S450', timestampx: new Date() },
+                    { id: 5, brand: 'Malibu ', subbrand: 'S450', timestampx: new Date() },
+                    { id: 6, brand: 'Honda ', subbrand: 'S450', timestampx: new Date() },
+                    { id: 7, brand: 'Sbaru ', subbrand: 'S450', timestampx: new Date() },
+                    { id: 8, brand: 'Benz ', subbrand: 'S300', timestampx: new Date() },
+                    { id: 9, brand: 'Benz ', subbrand: 'E450', timestampx: new Date() }
+                ],
+                id: '',
+                brand: '',
+                subbrand: '',
+                keywords: '',
+                msg: '这是美好美好美好的一天'
+            },
+            methods: {
+                add() { //依据数据来添加
+                    console.log('add function triggered')
+                    this.brandlist.push({ id: this.id, brand: this.brand, subbrand: this.subbrand, timestampx: new Date() }),
+                        this.id = '',
+                        this.brand = '',
+                        this.subbrand = ''
+                },
+                del(id) { //依据id来删除数据 用some函数来匹配到id并删除他
+                    console.log('delete function triggered ' + id)
+                    this.brandlist.some((item, i) => {
+                        if (item.id == id) {
+                            this.brandlist.splice(i, 1)
+                            return true;
+                        }
+                    })
+                },
+                del1(id) { //依据id来删除数据 另外一种delete的写法
+                    console.log('delete1 function triggered ')
+                    var index = this.brandlist.findIndex(item => {
+                        if (item.id == id) {
+                            return true;
+                        }
+                    }
+                    )
+                    this.brandlist.splice(index, 1)
+                },
+                search(keywords) {
+                    var newbrandlist = []
+                    this.brandlist.forEach(item => {
+                        if (item.brand.indexOf(keywords) != -1) {
+                            newbrandlist.push(item)
+                        }
+                    })
+                    return newbrandlist
+                },
+                getInfo() {
+                    this.$http.get('http://jsonplaceholder.typicode.com/users').then(function (result) {
+                        console.log(result.body)
+                    })
+                },
+                postInfo() { //第二个参数没有手动提交的表单没有格式 第三个参数未提交内容数据格式
+                    this.$http.post('http://jsonplaceholder.typicode.com/users', {}, { emulateJSON: true }).then(result => { console.log(result.body) })
+                },
+                jsonpInfo() {
+                    this.$http.post('http://jsonplaceholder.typicode.com/users').then(result => { console.log(result.body) })
+                }
+            }
+        });
+
+        var vm2 = new Vue({
+            el: '#app2',
+            data: {
+                dt: new Date(),
+                msgWelcome: 'Welcome to beforeCreate',
+            },
+            methods: {
+                show() {
+                    console.log(this.msgWelcome)
+                },
+                changeMessage() {
+                    this.msgWelcome = 'message has been changed....'
+                    console.log('message changed......')
+                    console.log(document.getElementById('h3msgWelcome').innerText)
+                }
+            },
+
+            beforeCreate() {
+                //数据还没有初始话 data methods都无法使用
+                console.log(document.getElementById('h3msgWelcome').innerText + 'beforeCreate')
+            },
+            created() {
+                //这里已经初始化好了可以使用了
+                console.log(document.getElementById('h3msgWelcome').innerText + 'created')
+            },
+            beforeMount() {
+                //模板已经编译完成但是尚未将模板渲染到页面去
+                console.log(document.getElementById('h3msgWelcome').innerText + 'beforeMount')
+            },
+            mounted() {
+                //内存重的模板已经挂载到画面上 渲染完成
+                console.log(document.getElementById('h3msgWelcome').innerText + 'mounted')
+            },
+            beforeUpdate() {
+                //界面还没有被更新 数据已经被更新了 数据永远是最新的
+                console.log(document.getElementById('h3msgWelcome').innerText + 'beforeUpdate')
+            },
+            updated() {
+                console.log(document.getElementById('h3msgWelcome').innerText + 'updated')
+            },
+            beforeDestroy() {
+                console.log(document.getElementById('h3msgWelcome').innerText + 'updated')
+            },
+            destroyed() {
+                console.log(document.getElementById('h3msgWelcome').innerText + 'updated')
+            },
+            filters: {
+                dateformater: function (datestr, pattern = ' ') {
+                    var dt = new Date(datestr)
+                    var y = dt.getFullYear()
+                    var m = (dt.getMonth() + 1).toString().padStart(2, '0')
+                    var d = (dt.getDate()).toString().padStart(2, '0')
+                    if (pattern.toLowerCase() == 'yyyy-mm-dd') {
+                        return `${y}-${m}-${d} ~~~~ `
+                    }
+                    else {
+                        var hh = dt.getHours().toString().padStart(2, '0')
+                        var mm = dt.getMinutes().toString().padStart(2, '0')
+                        var ss = dt.getSeconds().toString().padStart(2, '0')
+                        return `${y}-${m}-${d} ${hh}:${mm}:${ss} ~~~~ `
+                    }
+                }
+            },
+
+            directives: {
+                'fontweight': { //设置字体粗细
+                    bind: function (el, binding) {
+                        el.style.fontweight = binding.value
+                    },
+                    inserted: function (el, binding) {
+                        el.focus()
+                    },
+                    updated: function (el, binding) {
+
+                    }
+                },
+                fontsize: function (el, binding) { //这个是简写模式等同于将代码写入bind和update里面去 钩子函数
+                    console.log('私有钩子函数的值是' + binding.value)
+                    el.style.fontsize = parseInt(binding.value) + 'px'
+                }
+            }
+        });
+
+        //document.getElementById('search').focus
+
+    </script>
+</body>
+
+</html>

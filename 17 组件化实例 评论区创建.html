@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue.min.js"></script>
+    <script src="./lib/vue-resource.min.js"></script>
+    <link href="./lib/bootstrap.min.css" rel="stylesheet" />
+    <link href="./lib/dist/bootstrap-table.css" rel="stylesheet" />
+    <script src="./lib/jquery.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
+    <script src="./lib/bootstrap-table.js"></script>
+    <script src="./lib/dist/locale/bootstrap-table-zh-CN.js"></script>
+</head>
+
+<body>
+    <div id="root">
+
+        <commentsbox @post="loadComments"></commentsbox>
+
+        <ul class="list-group">
+            <li class="list-group-item" v-for="(item,i) in list" :key="i">
+                <span class="badge" >评论人:{{item.user}}</span>
+                {{item.content}}
+            </li>
+        </ul>
+
+    </div>
+
+    <template id="tmpl1">
+        <div>
+            <div class="form-group">
+                <label for="">评论人:</label>
+                <input type="text" class="form-control" v-model="user">
+            </div>
+            <div class="form-group">
+                <label for="">评论内容:</label>
+                <textarea class="form-control" v-model="content"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="button" value="发表评论" class="btn btn-primary" @click="postComment">
+            </div>
+        </div>
+    </template>
+    <template id="tmpl2">
+
+    </template>
+    <script>
+        Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示
+        var commentsbox = {
+            template: '#tmpl1',
+            data(){
+                return{
+                    content:'',
+                    user:'',
+                }
+            },
+            methods: { //发表评论
+                postComment() {
+                    //业务逻辑
+                    //1. 评论存放到哪里去 LocalStorage
+                    //2. 组织处一个最新的评论数据对象
+                    //3. 想办法将第二部的对象 存放到local storage localStorage.setItem('cmts','')
+                    //  3.1 要序列化数据存放起来 调用json.stringify
+                    //  3.2 在保存最新数据之前 要先从local storage获取到之前评论的数据(string) 转换为数组对象push到这个数组
+                    //  3.3 如果获取的数据为空数据则返回一个[]让json去转换否则会报错
+                    //  3.4 把最新的数组再次掉哦那个json.stringify 转为字符调用localStorage.setItem()
+                    var comment = { id: Date.now(), user: this.user, content: this.content }
+                    var list = JSON.parse(localStorage.getItem('cmts') || '[]') //从localstorage获取所有数据
+                    list.unshift(comment)
+                    localStorage.setItem('cmts',JSON.stringify(list)) // 重新保存最新的数据
+                    this.content=''
+                    this.user=''
+                    this.$emit('post',list) //子组件返回数据给父组件 前面post是触发的事件名称 后面的list为回传的数据
+                },
+            }
+        }
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                list: [
+                    { id: Date.now(), user: 'Jason', content: 'this is my first component' },
+                    { id: Date.now(), user: 'Alex', content: 'this is my first component' },
+                    { id: Date.now(), user: 'Wendy', content: 'this is my first component' },
+                    { id: Date.now(), user: 'Wendy', content: 'this is my first component' },
+                    { id: Date.now(), user: 'Wendy', content: 'this is my first component' },
+                    { id: Date.now(), user: 'Wendy', content: 'this is my first component' },
+                    { id: Date.now(), user: 'Wendy', content: 'this is my first component' },
+                    { id: Date.now(), user: 'Wendy', content: 'this is my first component' },
+                ],
+
+            },
+            methods: {
+                loadComments() {
+                    var list = JSON.parse(localStorage.getItem(('cmts')||'[]'))
+                    //console.log(list)
+                    this.list = list
+                    console.log('this is list',this.list)
+                }
+            },
+            components: {
+                commentsbox
+            },
+            created(){
+                localStorage.removeItem()
+            },
+        });
+    </script>
+</body>
+
+</html>

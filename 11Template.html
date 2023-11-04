@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue.min.js"></script>
+    <script src="./lib/vue-resource.min.js"></script>
+    <link href="./lib/bootstrap.min.css" rel="stylesheet" />
+    <link href="./lib/dist/bootstrap-table.css" rel="stylesheet" />
+    <script src="./lib/jquery.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
+    <script src="./lib/bootstrap-table.js"></script>
+    <script src="./lib/dist/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="./lib/axios.min.js"></script>
+    <style>
+        .bounce-enter-active {
+          animation: bounce-in .5s;
+        }
+        .bounce-leave-active {
+          animation: bounce-in .5s reverse;
+        }
+        @keyframes bounce-in {
+          0% {
+            transform: scale(0);
+          }
+          50% {
+            transform: scale(1.5);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+    </style>
+    <style>
+        .active {
+            width: 100px;
+            height: 100px;
+            background: green;
+        }
+        .text-danger {
+            background: red;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="root">
+        
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>bs3 table</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>bs3 table</td>
+                </tr>
+            </tbody>
+        </table>
+        <globalcomponent></globalcomponent>
+
+        <button v-on:click = "show = !show">点我</button>
+        <transition name="bounce">
+            <p v-if="show">菜鸟教程 -- 学的不仅是技术，更是梦想！！！</p>
+        </transition>
+        <button v-on:click = "green = !green">green</button><button v-on:click = "red = !red">red</button>
+        <div class="static" v-bind:class="{ 'active': green, 'text-danger': red }">textinfo</div>
+    </div>
+
+
+
+    <script type = "text/javascript">
+        Vue.component('globalcomponent',{
+            template:'<h1>this is a global components</h1>'
+        })
+
+        Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示
+        const vm = new Vue({
+            el: '#root',
+            data:{
+                show:true,
+                green:true,
+                red:true,                
+            },
+            method:{
+
+            },
+            mounted () {
+                axios
+                .get('https://www.runoob.com/try/ajax/json_demo.json')
+                .then(response => (this.info = response))
+                .catch(function (error) { // 请求失败处理
+                    console.log(error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <script src="./lib/vue.min.js"></script>
+
+    <div id="app">
+        <!--v-bind只能实现数据的单向绑定 m-v-->
+        <!--v-model可以实现数据双向绑定 v-m m-v-->
+        <h4>{{msg1}}</h4>
+        <input type="Button" name="Button1" value="Systeminfo" @click="systemoutinfo" />
+        <p></p>
+        <input type="text" name="text1" v-bind:value="msg1" style="width:80%" />
+        <input type="text" name="text2"  style="width:80%" v-model="msg1" />
+    </div>
+
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                msg1: 'Hello Everyone'
+            },
+            methods: {
+                systemoutinfo() {
+                    console.log(window.vm)
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>

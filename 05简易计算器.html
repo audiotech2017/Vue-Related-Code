@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <script src="./lib/vue.min.js"></script>
+
+    <div id="app" >
+
+        <input type="text"  name="n1" value="" v-model="n1"/>
+        <select v-model ="opt">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="text"  name="n2" value="" v-model="n2"/>      
+        <input type="Button" name="equalsign" value="=" @click="Calc" />
+        <input type="text" name="result" value="" v-model="result"/>
+
+    </div>
+
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: { //这里定义变量
+                n1: 0,
+                n2: 0,
+                result: 0,
+                opt: '+'
+            },
+            methods: {
+                Calc() {
+                    switch (this.opt) {
+                        case '+':
+                            this.result = parseInt(this.n1) + parseInt(this.n2)
+                            break;
+                        case '-':
+                            this.result = parseInt(this.n1) - parseInt(this.n2)
+                            break;
+                        case '*':
+                            this.result = parseInt(this.n1) * parseInt(this.n2)
+                            break;
+                        case '/':
+                            this.result = parseInt(this.n1) / parseInt(this.n2)
+                            break;
+                    }
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>

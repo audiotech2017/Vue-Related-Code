@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <script src="./lib/vue.min.js"></script>
+    <style>
+        .red {
+            color: red;
+        }
+        .thin {
+            font-weight: 100;
+        }
+        .italic {
+            font-style: italic;
+        }
+        .active {
+            letter-spacing: 0.5cm;
+        }
+        .size {
+            font-size 5
+        }
+    </style>
+    <div id="app">
+        <p>下面是使用外联样式处理显示</p>
+        <!--下面是使用外联样式处理显示-->
+        <h1 class="red italic size">01这是一个很大的很大的 大到你无法想象的</h1>
+        <!--这里用到了v-bind 所以需要用常量信息-->
+        <h1 v-bind:class="['thin']">02这是一个很大的很大的 大到你无法想象的</h1>
+        <!--多个绑定 需要用到数组 数组之间的数据用逗号隔开-->
+        <h1 :class="['thin', 'red','size']">03这是一个很大的很大的 大到你无法想象的</h1>
+        <!--可以多个元素一起上-->
+        <h1 :class="['thin', 'red', 'active']">04这是一个很大的很大的 大到你无法想象的</h1>
+        <!--可以书写表达式 三元表达式 ?true:false-->
+        <h1 :class="['thin', 'red', 'size',flag?'active':'']">05这是一个很大的很大的 大到你无法想象的</h1>
+        <h1 :class="['thin', 'red', {'active':flag}]">06这是一个很大的很大的 大到你无法想象的</h1>
+        <h1 :class="{red:true, thin:true, active:false, italic:true}">07这是一个很大的很大的 大到你无法想象的</h1>
+        <p></p>
+        <h1 :class="classobjatr">08这是一个很大的很大的 大到你无法想象的</h1>
+
+        <p>下面是使用内联样式来显示</p>
+        <!--下面是使用内联样式来显示-->
+        <h1 :style="{color:'red', 'font-weight':200}">09这是一个很大的很大的 大到你无法想象的</h1>
+        <!--多个变量通过数组来绑定-->
+        <h1 :style="[styleobjatr,styleobjatr1]">10这是一个很大的很大的 大到你无法想象的</h1>
+
+        <!--v-for运用循环将数组呈现出来-->
+        <p>{{datalist[0]}}</p><p>{{datalist[1]}}</p><p>{{datalist[2]}}</p><p>{{datalist[3]}}</p><p>{{datalist[4]}}</p><p>{{datalist[5]}}</p>
+        <p v-for="(item, i) in datalist">索引值:{{i}} --- 每一项:{{item}}</p>
+        <p v-for="(item, i) in namelist">索引值:{{i}} --- 每一项:{{item.id}}|{{item.name}}|{{item.sex}}</p>
+        <!--v-for运用循环将对象呈现出来-->
+        <p v-for="(item, i) in user">索引值:{{i}} --- 每一项:{{item.id}}|{{item.sex}}|{{item.title}}|{{item.age}}</p>
+        <!--v-for运用循环迭代数字-->
+        <p v-for="count in 10">这是第{{count}}次循环</p>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                flag: true,
+                classobjatr: { red: true, thin: true, active: false, italic: true },
+                styleobjatr: { color: 'red', 'font-weight': 100 },
+                styleobjatr1: { 'font-style': 'italic' },
+                datalist: [1, 2, 3, 4, 5, 6],
+                namelist: [
+                    { id: 815668, name: 'Eric', sex: 'Male' },
+                    { id: 815669, name: 'Jacky', sex: 'Male' },
+                    { id: 815670, name: 'Dasy', sex: 'Female' },
+                    { id: 815671, name: 'Frankie', sex: 'Male' }
+                ],
+                user: [
+                    { id: 123 },
+                    { sex: 'female' },
+                    { age: 58 },
+                    { title: 'manager' }
+                ]
+            },
+            methods: {
+
+            }
+        });
+        [].forEach((item, i) => {})
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <script src="./lib/vue.min.js"></script>
+    <div id="app">
+        <label>ID:<input type="text" name="id" v-model="id" /></label>
+        <label>Name:<input type="text" name="name" v-model="name" /></label>
+        <label>
+            Gender:
+            <select v-model="gender">
+                <option value="male">male</option>
+                <option value="female">female</option>
+            </select>
+        </label>
+        <input type="button" name="Add" value="Add" @click="add" />
+        <!--v-for key 就是将选定的数据锁死-->
+        <p v-for="(item,i) in list" v-bind:key="item.id">
+            <input type="checkbox" name="check" value="" />
+            ---{{item.id}}
+            ---{{item.name}}
+            ---{{item.gender}}
+        </p>
+
+        <input type="button" name="name" value="toggle" @click="toggle" />
+        <!--v-if每次都会删除和重新创建元素 切换消耗比较大-->
+        <!--v-show每次不会删除和创建 只会隐藏 切换消耗相对较小-->
+        <h3 v-if="flag">Controlled by v-if</h3>
+        <h3 v-show="flag">Controoled by v-show</h3>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                id: ' ',
+                name: ' ',
+                gender: ' ',
+                flag: true,
+                list: [
+                    { id: '0001', name: 'Eric', gender: 'male' },
+                    { id: '0002', name: 'Jason', gender: 'male' },
+                    { id: '0003', name: 'Yuki', gender: 'female' }
+                ]
+            },
+            methods: {
+                add() {
+                    console.log('add function triggered')
+                    this.list.unshift({ id: this.id, name: this.name, gender: this.gender })
+                },
+                toggle() {
+                    this.flag=!this.flag
+                }
+            }
+        });
+        [].forEach((item, i) => { })
+    </script>
+</body>
+</html>

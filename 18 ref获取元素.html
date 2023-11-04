@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue.min.js"></script>
+    <script src="./lib/vue-resource.min.js"></script>
+    <link href="./lib/bootstrap.min.css" rel="stylesheet" />
+    <link href="./lib/dist/bootstrap-table.css" rel="stylesheet" />
+    <script src="./lib/jquery.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
+    <script src="./lib/bootstrap-table.js"></script>
+    <script src="./lib/dist/locale/bootstrap-table-zh-CN.js"></script>
+</head>
+<body>
+    <div id="root">
+            <input type="button" value="获取元素" @click="getElement()">
+            <h3 id='myh3' ref="myh3">哈哈哈哈</h3>
+
+            <login ref="loginref"></login>
+    </div>
+
+    <template id="tmpl1">
+        <h1>this is a tempalte for component</h1>
+    </template>
+    <script>
+        Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示
+
+        var login = {
+            template:'#tmpl1',
+            data(){
+                return {
+                    msg:'this is a message from child',
+                }
+            },
+            method:{
+
+            },
+            props:[],
+        }
+
+        const vm = new Vue({
+            el: '#root',
+            data() {
+
+            },
+            methods: {
+                getElement(){
+                    console.log(document.getElementById('myh3').innerText)
+                    console.log(this.$refs.myh3.innerText)
+                    //可以通过ref来找到component里面的属性
+                    console.log(this.$refs.loginref.msg)
+                },
+            },
+            components:{
+                login
+            }
+        });
+    </script>
+</body>
+</html>

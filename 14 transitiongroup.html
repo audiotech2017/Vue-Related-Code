@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue.min.js"></script>
+    <script src="./lib/vue-resource.min.js"></script>
+    <link href="./lib/bootstrap.min.css" rel="stylesheet" />
+    <link href="./lib/dist/bootstrap-table.css" rel="stylesheet" />
+    <script src="./lib/jquery.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
+    <script src="./lib/bootstrap-table.js"></script>
+    <script src="./lib/dist/locale/bootstrap-table-zh-CN.js"></script>
+</head>
+
+<style>
+    li {
+        border: 1px dashed #999;
+        margin: 5px;
+        line-height: 35px;
+        padding-left: 5px;
+        font-size: 15px;
+        font-family: 'Courier New', Courier, monospace;
+        font: 'Courier New', Courier, monospace;
+    }
+
+    li:hover{
+        background-color: #f8aaaa;
+        transition: 0.8s ease;
+    }
+
+    .v-enter,
+    .v-leave-to{
+        opacity: 0;
+        transform:translateY(-80);
+    }
+    .v-enter-active,
+    .v-leave-active {
+        transition: all 0.6s ease;
+    }
+    .v-move{
+        transition: all 0.8s ease;
+    }
+    .v-leave-active{
+        position: absolute;
+    }
+</style>
+
+<body>
+
+        <div id="root">
+            <ul>
+                <transition-group>
+                <li v-for="(item,i) in items" :key="i">
+                    {{item}} ---
+                    <input type="button" @click="del(i)" value="X">
+                    <input type="button" @click="add()" value="Add">
+
+                </li>
+            </transition-group>
+            </ul>
+        </div>
+
+
+    <script>
+        Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                items: [1, 2, 3, 4, 5],
+            },
+            methods: {
+                add() {
+                    var i = this.items.length + 1
+                    this.items.push(i)
+                },
+                del(i) {
+                    console.log(i)
+                    this.items.splice(i, 1)
+                },
+            }
+        });
+    </script>
+</body>
+
+</html>

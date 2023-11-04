@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+
+</head>
+
+<body>
+
+    <script src="./lib/vue.min.js"></script>
+
+    <style>
+        .inner {
+            height: 150px;
+            background-color: darkcyan;
+        }
+
+        .outer {
+            background-color: red;
+            padding: 40px;
+        }
+    </style>
+
+
+    <div id="app">
+        <div class="outer" @click="div1Click">
+            <div class="inner" @click.capture="divClick">
+                <!--.stop防止冒泡发生 重叠区域点击事件的触发会造成两个或者两个以上的事件 使用.stop可以避免这事件 被动触发事件-->
+                <input type="Button" name="name" value=".stop修饰符" @click.stop="buttonClick" />
+                <p></p>
+                <!--.Prevent可以防止链接点开 但是事件点击事件是出发的 表单里面的submit也是这样-->
+                <a href="https://www.baidu.com" @click.Prevent="linkClick">content</a>
+                <!--.capture按照顺序来捕获事件的处罚 先出发外层的div再出发内层的button1-->
+                <!--.self当前元素只有点击才会触发 不会有冒泡的情况 前面需要加上.self-->
+                <input type="Button" name="name" value=".capture修饰符" @click="button1Click" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {},
+            methods: {
+                divClick() {
+                    console.log('div Click Triggered....')
+                },
+                buttonClick() {
+                    console.log('button Click Triggred...')
+                },
+                button1Click() {
+                    console.log('button1 Click Triggred...')
+                },
+                linkClick() {
+                    console.log('link Click Triggred...')
+                },
+                div1Click() {
+                    console.log('div1 Click Triggred...')
+                }
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

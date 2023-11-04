@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue.min.js"></script>
+    <script src="./lib/vue-resource.min.js"></script>
+    <link href="./lib/bootstrap.min.css" rel="stylesheet" />
+    <link href="./lib/dist/bootstrap-table.css" rel="stylesheet" />
+    <script src="./lib/jquery.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
+    <script src="./lib/bootstrap-table.js"></script>
+    <script src="./lib/dist/locale/bootstrap-table-zh-CN.js"></script>
+</head>
+<style>
+    /* .v-enter,
+    .v-leave-to {
+        opacity: 0;
+        transform: translateX(150px);
+    }
+
+    .v-enter-active,
+    .v-leave-active {
+        transition: All 0.4s ease;
+    } */
+
+    .ball {
+        width: 15px;
+        height: 15px;
+        background-color: red;
+        border-radius: 50%;
+    }
+</style>
+
+<body>
+    <div id="root">
+        <input type="button" value="Add Cart" @click="flag=!flag">
+
+        <transition @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+            <div class="ball" v-show="flag"></div>
+        </transition>
+
+        <a href="" @click.prevent="comName='login'">Login</a>
+        <a href="" @click.prevent="comName='register'">Register</a>
+        <transition mode="out-in">
+            <component :is="comName"></component>
+        </transition>
+        <!-- 父组件向子组件传递data和event的过程 都是通过绑定来实现的 -->
+        <!-- 父组件通过绑定参数向子组件传数据  子组件通过绑定事件向父组件回传参数传输数据 -->
+        <testx v-bind:parentmsg="msg" v-on:func="show"></testx> 
+        <testy>testy</testy>
+
+    </div>
+
+
+
+    <template id="tmpl1">
+        <h3>login</h3>
+    </template>
+
+    <template id="tmpl2">
+        <h3>register</h3>
+    </template>
+
+
+    <script>
+        Vue.config.productionTip = false //阻止 vue 在启动时生成生产提示
+
+
+
+        Vue.component('login', {
+            template: '#tmpl1',
+            directives: {},
+        })
+        Vue.component('register', {
+            template: '#tmpl2'
+        })
+
+//*******************
+        var testx = {
+            template: '<h1 @click="change">testx1 testx1---{{parentmsg}}</h1>',
+            props: ['parentmsg'], // 父组件串接子组件 接口参数 通过v-bind连接
+            data: function () {
+                return {
+                    childmsg: 'this is from Child',
+                    counter: 0,
+                    somemsg:{name:'小鱼儿', age:6, hobbies:'swiming,running'}
+                }
+            },
+            methods: {
+                change() {
+                    console.log(this.parentmsg) //子组件修改父组件传递过来的信息 由于只读 所以无法修改
+                    this.parenetmsg = '被子组件修改过的来自父组件的信息'
+                    console.log(this.parentmsg)
+                    this.$emit('func',this.somemsg)
+                },
+            },
+        } // 比较容易理解父组件和子组件互相传输数据的问题
+//*******************
+
+        Vue.component('testy', testx)
+
+
+        const vm = new Vue({
+            el: '#root',
+            data: {
+                flag: false,
+                comName: '',
+                msg: '这是来自父组件的信息',
+                dataMsgfromson:null,
+            },
+            components: { // 比较容易理解
+                testx
+            },
+            methods: {
+                beforeEnter(el) {
+                    el.style.transform = 'translate(0, 0)'
+                },
+                enter(el, done) {
+                    el.offsetWidth //注意大小写 驼峰模式
+                    el.style.transform = 'translate(150px, 450px)'
+                    el.style.transition = 'all 1s ease'
+                    done()
+                },
+                afterEnter(el) {
+                    //控制小球的显示与隐藏
+                    //直接跳过后半场动画 让小球标识符直接变为false
+                    //当第二次再次点击的时候 false 变为 true
+                    //vue将一个完整的动画使用钩子函数拆分为了2个部分
+                    //我们使用flag来切换
+                    this.flag = !this.flag
+                    //el.opacity = 1
+                },
+                show(data){
+                    console.log('这是父组件上的函数' , data)
+                    console.log('这是父组件上的函数' + data.name)
+                    this.dataMsgfromson = data
+                },
+            }
+        });
+    </script>
+</body>
+
+</html>
